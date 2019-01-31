@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  web:
+    build:
+      context: ../../docker/build/dev/nginx
+    volumes:
+      - ../../${WEB_WWW_PATH:-src/test/}:/var/www
+      - ../build/dev/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../build/dev/nginx/sites/:/etc/nginx/sites-available
+      - ../build/dev/nginx/conf.d/:/etc/nginx/conf.d
+    ports:
+      - ${WEB_HTTP_PORT:-80}:80
+      - ${WEB_HTTPS_PORT:-443}:443
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: ../../docker/build/dev/php-fpm
+    volumes:
+      - ../../${WEB_WWW_PATH:-src/test/}:/var/www
