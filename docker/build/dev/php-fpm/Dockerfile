@@ -7,6 +7,9 @@ RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/bin/composer
 
+ENV USERID
+RUN useradd -r -u USERID -g appuser appuser
+
 WORKDIR /var/www
 
 CMD ["php-fpm"]

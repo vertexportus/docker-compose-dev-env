@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ $* == *--root* ]]; then
+    docker-compose exec $1 /bin/sh
+else
+    docker-compose exec --user=$UID $1 /bin/sh
+fi
