@@ -6,7 +6,7 @@ Laravel docker-compose basic env
 - ENV=dev
 - COMPOSE_API_VERSION
 - COMPOSE_CONVERT_WINDOWS_PATHS
-- COMPOSE_FILE=./docker/compose/docker-compose.yaml
+- COMPOSE_FILE=docker/compose/base.yaml:docker/compose/postgres/postgres.yaml
 - COMPOSE_HTTP_TIMEOUT
 - COMPOSE_TLS_VERSION
 - COMPOSE_PROJECT_NAME

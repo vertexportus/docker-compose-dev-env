@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  postgres:
+    build:
+      context: ../../docker/build/${ENV:-dev}/postgres
+
+  php:
+    depends_on:
+      - postgres
