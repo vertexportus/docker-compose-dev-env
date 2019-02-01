@@ -1,7 +1,9 @@
 # docker-laravel
 Laravel docker-compose basic env
 
-## env config
+## ENV config
+
+### Docker
 
 - ENV=dev
 - COMPOSE_API_VERSION
@@ -13,6 +15,10 @@ Laravel docker-compose basic env
 - DOCKER_CERT_PATH
 - DOCKER_HOST
 - DOCKER_TLS_VERIFY
+
+### Web/PHP
+
+- WEB_WWW_PATH=src/laravel-app
 
 ### Postgres
 
