@@ -19,3 +19,7 @@ Laravel docker-compose basic env
 - POSTGRES_USER
 - POSTGRES_PASSWORD
 - POSTGRES_DB
+
+### Redis
+
+- REDIS_PASSWORD
