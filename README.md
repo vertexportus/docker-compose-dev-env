@@ -13,3 +13,9 @@ Laravel docker-compose basic env
 - DOCKER_CERT_PATH
 - DOCKER_HOST
 - DOCKER_TLS_VERIFY
+
+### Postgres
+
+- POSTGRES_USER
+- POSTGRES_PASSWORD
+- POSTGRES_DB

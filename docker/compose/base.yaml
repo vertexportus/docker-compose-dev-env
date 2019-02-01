@@ -21,3 +21,5 @@ services:
       context: ../../docker/build/${ENV:-dev}/php-fpm
     volumes:
       - ../../${WEB_WWW_PATH:-src/test/}:/var/www
+    env_file:
+      - ../../.env

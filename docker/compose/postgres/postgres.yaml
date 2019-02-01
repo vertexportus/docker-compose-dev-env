@@ -5,6 +5,10 @@ services:
   postgres:
     build:
       context: ../../docker/build/${ENV:-dev}/postgres
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
 
   php:
     depends_on:
