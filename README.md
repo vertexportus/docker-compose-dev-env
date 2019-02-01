@@ -3,6 +3,14 @@ Laravel docker-compose basic env
 
 ## ENV config
 
+BASIC only nginx+php needs:
+COMPOSE_FILE=docker/compose/base.yaml
+
+To add services to the docker-compose config, you can concatenate to the COMPOSE_FILE list, like so:
+COMPOSE_FILE=docker/compose/base.yaml:docker/compose/postgres/postgres.yaml
+
+see all available additional compose configs in docker/compose folder
+
 ### Docker
 
 - ENV=dev
