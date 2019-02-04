@@ -6,7 +6,7 @@ services:
     build:
       context: ../../docker/build/${ENV:-dev}/nginx
     volumes:
-      - ../../${WEB_WWW_PATH:-src/test/}:/var/www
+      - ../../${PHP_APP_PATH:-src/test/}:/var/www
       - ../build/${ENV:-dev}/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ../build/${ENV:-dev}/nginx/sites/:/etc/nginx/sites-available
       - ../build/${ENV:-dev}/nginx/conf.d/:/etc/nginx/conf.d
@@ -20,6 +20,6 @@ services:
     build:
       context: ../../docker/build/${ENV:-dev}/php-fpm
     volumes:
-      - ../../${WEB_WWW_PATH:-src/test/}:/var/www
+      - ../../${PHP_APP_PATH:-src/test/}:/var/www
     env_file:
       - ../../${PHP_DOTENV:-.env}
