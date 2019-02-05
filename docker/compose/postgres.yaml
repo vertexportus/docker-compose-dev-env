@@ -9,7 +9,3 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
-
-  php:
-    depends_on:
-      - postgres

@@ -16,7 +16,7 @@ see all available additional compose configs in docker/compose folder
 - ENV=dev
 - COMPOSE_API_VERSION
 - COMPOSE_CONVERT_WINDOWS_PATHS
-- COMPOSE_FILE=docker/compose/base.yaml:docker/compose/postgres/postgres.yaml
+- COMPOSE_FILE=docker/compose/web-php.yaml:docker/compose/postgres/postgres.yaml
 - COMPOSE_HTTP_TIMEOUT
 - COMPOSE_TLS_VERSION
 - COMPOSE_PROJECT_NAME
@@ -24,9 +24,10 @@ see all available additional compose configs in docker/compose folder
 - DOCKER_HOST
 - DOCKER_TLS_VERIFY
 
-### Web/PHP
+### Web
 
-- WEB_WWW_PATH=src/laravel-app
+- PHP_APP_PATH=src/laravel-app
+- ANGULAR_APP_PATH=src/angular-app
 
 ### Postgres
 
