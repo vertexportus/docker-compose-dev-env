@@ -26,7 +26,7 @@ see all available additional compose configs in docker/compose folder
 
 ### Web
 
-- WEB_APP_PATH=src/laravel-app
+- PHP_APP_PATH=src/laravel-app
 - ANGULAR_APP_PATH=src/angular-app
 
 ### Postgres
