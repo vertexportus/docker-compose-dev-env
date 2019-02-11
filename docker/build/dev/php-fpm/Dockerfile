@@ -13,10 +13,10 @@ RUN apk update \
 # PHP extensions
 RUN docker-php-ext-install \
         zip \
-        pdo pdo_pgsql \
+        pdo pdo_pgsql pdo_mysql mysqli \
     && docker-php-ext-enable \
         zip \
-        pdo pdo_pgsql
+        pdo pdo_pgsql pdo_mysql mysqli
 # PECL extensions (like xdebug is stupid)
 RUN pecl install \
         xdebug-2.7.0RC1 \
@@ -36,8 +36,6 @@ ENV PHP_XDEBUG_REMOTE_HOST 172.18.0.1
 ENV PHP_XDEBUG_REMOTE_PORT 9000
 ENV PHP_XDEBUG_IDEKEY PHPSTORM
 RUN echo -e "\nxdebug.remote_enable=1\nxdebug.remote_host=${PHP_XDEBUG_REMOTE_HOST}\nxdebug.remote_port=${PHP_XDEBUG_REMOTE_PORT}\nxdebug.remote_autostart=1\nxdebug.idekey=${PHP_XDEBUG_IDEKEY}\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-# RUN ln -sf /dev/stdout /var/log/php7/xdebug.log
-# RUN echo -e "\nxdebug.remote_enable=1\nxdebug.remote_host=${PHP_XDEBUG_REMOTE_HOST}\nxdebug.remote_port=${PHP_XDEBUG_REMOTE_PORT}\nxdebug.remote_autostart=1\nxdebug.idekey=${PHP_XDEBUG_IDEKEY}\nxdebug.remote_log=/var/log/php7/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 # env
 ENV UID 1000

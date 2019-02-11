@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  mariadb:
+    build:
+      context: ../../docker/build/${ENV:-dev}/mariadb
+    environment:
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_DATABASE
+      - "MYSQL_RANDOM_ROOT_PASSWORD=yes"

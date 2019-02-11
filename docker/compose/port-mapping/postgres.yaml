@@ -3,7 +3,5 @@ version: '3'
 services:
 
   postgres:
-    build:
-      context: ../../docker/build/${ENV:-dev}/postgres
     ports:
       - ${POSTGRES_PORT:-5432}:5432
