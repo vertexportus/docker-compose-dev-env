@@ -4,6 +4,7 @@ FROM php:7.3-fpm-alpine
 # APK installs
 RUN apk update \
     && apk add --no-cache \
+        $PHPIZE_DEPS \
         libzip libzip-dev \
         zlib zlib-dev \
         postgresql-dev \
@@ -16,6 +17,11 @@ RUN docker-php-ext-install \
     && docker-php-ext-enable \
         zip \
         pdo pdo_pgsql
+# PECL extensions (like xdebug is stupid)
+RUN pecl install \
+        xdebug-2.7.0RC1 \
+    && docker-php-ext-enable \
+        xdebug
 
 # composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -24,15 +30,22 @@ RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/bin/composer
 
+# xdebug
+RUN mkdir --parents /var/log/php7
+ENV PHP_XDEBUG_REMOTE_HOST 172.18.0.1
+ENV PHP_XDEBUG_REMOTE_PORT 9000
+ENV PHP_XDEBUG_IDEKEY PHPSTORM
+RUN echo -e "\nxdebug.remote_enable=1\nxdebug.remote_host=${PHP_XDEBUG_REMOTE_HOST}\nxdebug.remote_port=${PHP_XDEBUG_REMOTE_PORT}\nxdebug.remote_autostart=1\nxdebug.idekey=${PHP_XDEBUG_IDEKEY}\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# RUN ln -sf /dev/stdout /var/log/php7/xdebug.log
+# RUN echo -e "\nxdebug.remote_enable=1\nxdebug.remote_host=${PHP_XDEBUG_REMOTE_HOST}\nxdebug.remote_port=${PHP_XDEBUG_REMOTE_PORT}\nxdebug.remote_autostart=1\nxdebug.idekey=${PHP_XDEBUG_IDEKEY}\nxdebug.remote_log=/var/log/php7/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # env
 ENV UID 1000
 ENV GID 1000
 RUN addgroup -S --gid $GID php-user \
     && adduser -S -D --uid $UID -G php-user php-user
 USER php-user
-
 WORKDIR /var/www
+EXPOSE 9000
 
 CMD ["php-fpm"]
-
-EXPOSE 9000

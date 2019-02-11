@@ -23,3 +23,7 @@ services:
       - ../../${PHP_APP_PATH:-src/test/}:/var/www
     env_file:
       - ../../${PHP_DOTENV:-.env}
+    environment:
+      - PHP_XDEBUG_REMOTE_HOST
+      - PHP_XDEBUG_REMOTE_PORT
+      - PHP_XDEBUG_IDEKEY
