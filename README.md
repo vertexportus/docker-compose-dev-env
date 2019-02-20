@@ -1,4 +1,5 @@
-# docker-laravel
+# docker env
+
 Laravel docker-compose basic env
 
 ## ENV config

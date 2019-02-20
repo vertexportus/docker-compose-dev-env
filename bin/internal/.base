@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+dir_name=$( dirname "${BASH_SOURCE[0]}" )
+bin_pwd=$( cd $dir_name >/dev/null 2>&1 && pwd )/internal
+env_path=$( cd $dir_name/.. >/dev/null 2>&1 && pwd )
+env_command=$(basename "$0")
+
+ls_commands() {
+    printf "\n\e[33mAvailable commands:\e[0m\n\n"
+    commands=(`ls -la $bin_pwd | grep -oe "cmd-\w*" | grep -oe "\w*$"`)
+    for c in "${commands[@]}"
+    do
+        printf "\e[32m$c\e[0m - $(ENV_PATH=$env_path ENV_COMMAND=$env_command $bin_pwd/cmd-$c --help)\n"
+    done
+}
+
+if [[ -n "$1" && $1 != "--help" && $1 != "-h" ]]; then
+    cmd_name=$1
+    if [[ -e "$bin_pwd/cmd-$cmd_name" ]]; then
+        printf "\n\e[32mrunning cmd-$1:\e[0m\n\n"
+        shift
+        ENV_PATH=$env_path ENV_COMMAND=$env_command source $bin_pwd/cmd-$cmd_name $*
+    else
+        printf "\n\e[31mCommand \e[41m\e[37m$cmd_name\e[0m\e[31m does not exist!\e[0m\n"
+        ls_commands
+    fi
+else
+    ls_commands
+fi
