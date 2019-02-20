@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+exec_command() {
+    if [[ -z "$1" ]]; then
+        printf "\e[31mno 'npm' command specified\e[0m\n"
+        exit 1
+    fi
+    cd $ENV_PATH
+    arguments=($*);
+    npm_arguments=""
+    container=
+    for argument; do
+        if [[ $argument = "--container" || $container = "--container" ]]; then
+            container=$argument
+        else
+            npm_arguments="$npm_arguments $argument"
+        fi
+    done
+    if [[ $container = "" ]]; then
+        container=$(docker-compose ps --services | grep "angular")
+        if [[ $container = "" ]]; then
+            container=$(docker-compose ps --services | grep "node")
+        fi
+    fi
+    docker-compose exec --user=$UID $container npm $npm_arguments
+}
+
+if [[ -n $ENV_HELP ]]; then
+    printf "\e[36mruns 'npm' inside the a specified container: \e[36;1m$ENV_COMMAND npm [--container <container>] <commands>\e[0m\n"
+else
+    exec_command $*
+    printf "\n"
+fi
