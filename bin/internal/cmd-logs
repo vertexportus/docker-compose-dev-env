@@ -4,6 +4,6 @@ if [[ -n $ENV_HELP ]]; then
     printf "\e[36mshows docker logs: \e[36;1m$ENV_COMMAND logs [arguments]\e[0m\n"
 else
     cd $ENV_PATH
-    echo docker-compose logs $*
+    docker-compose logs $*
     printf "\n"
 fi
