@@ -15,7 +15,7 @@ exec_command() {
     fi
 }
 
-if [[ "$1" = "--help" ]]; then
+if [[ -n $ENV_HELP ]]; then
     printf "\e[36mopens a 'shell' terminal inside specified container: \e[36;1m$ENV_COMMAND shell <container> [--bash (use bash shell)]\e[0m\n"
 else
     exec_command $*
