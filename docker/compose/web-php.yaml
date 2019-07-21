@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  web:
+    build:
+      context: ../../docker/build/${ENV:-dev}/nginx
+    volumes:
+      - ../../${PHP_APP_PATH:-src/test/}:/var/www
+      - ../build/${ENV:-dev}/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ../build/${ENV:-dev}/nginx/sites/:/etc/nginx/sites-available
+      - ../build/${ENV:-dev}/nginx/conf.d/:/etc/nginx/conf.d
+    ports:
+      - ${WEB_HTTP_PORT:-80}:80
+      - ${WEB_HTTPS_PORT:-443}:443
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: ../../docker/build/${ENV:-dev}/php-fpm
+    volumes:
+      - ../../${PHP_APP_PATH:-src/test/}:/var/www
+    env_file:
+      - ../../${PHP_DOTENV:-.env}
+    environment:
+      - PHP_XDEBUG_REMOTE_HOST
+      - PHP_XDEBUG_REMOTE_PORT
+      - PHP_XDEBUG_IDEKEY

@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  angular:
+    build:
+      context: ../../docker/build/${ENV:-dev}/node
+    volumes:
+      - ../../${ANGULAR_APP_PATH:-src/frontend/}:/app
+      - ../../docker/build/${ENV:-dev}/node/entrypoint.sh:/docker-entrypoint.sh
+    ports:
+      - ${ANGULAR_APP_PORT:-4200}:4200

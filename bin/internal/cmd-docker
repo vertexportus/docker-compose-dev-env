@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+exec_command() {
+    cmd=$1
+    shift
+    if [[ -n "$cmd" ]]; then
+        cd $ENV_PATH
+        case "$cmd" in
+        "up")
+            docker-compose up -d $*
+            ;;
+        "down")
+            docker-compose down $*
+            ;;
+        "destroy")
+            docker-compose down --rmi all --remove-orphans
+            ;;
+        "ps")
+            docker-compose ps
+            ;;
+        "exec")
+            docker-compose exec $*
+            ;;
+        *)
+            printf "\e[31minvalid command \e[36;1m$1\e[0m\n"
+            ;;
+        esac
+    else
+        printf "\e[31mmissing command (up | down | destroy | exec)\e[0m\n"
+    fi
+}
+
+if [[ -n $ENV_HELP ]]; then
+    printf "\e[36mruns pre-defined docker or docker-compose commands: \e[36;1m$ENV_COMMAND docker <up | down | destroy | exec> [arguments]\e[0m\n"
+else
+    exec_command $*
+    printf "\n"
+fi
+

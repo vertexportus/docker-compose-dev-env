@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+
+  redis:
+    build:
+      context: ../../docker/build/${ENV:-dev}/redis
+    environment:
+      - REDIS_PASSWORD
