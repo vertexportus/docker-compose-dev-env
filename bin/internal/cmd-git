@@ -44,12 +44,12 @@ exec_command() {
             git checkout $*
             ;;
         "commit")
+            local branch=$(git branch | grep \* | cut -d ' ' -f2 | tr -d '\n')
             if [[ "$1" == "-m" ]]; then
                 shift
-                local branch=$(git branch | grep \* | cut -d ' ' -f2 | tr -d '\n')
-                echo "git commit -m \"$branch: $*\""
+                git commit -m "$branch: $*"
             else
-                echo "git commit -m \"$branch: \"" 
+                echo "$branch: " | vipe | git commit -F -
             fi
         esac
         echo ''
