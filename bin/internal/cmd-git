@@ -35,7 +35,13 @@ exec_command() {
             git clone "${!p}" "$ENV_PATH/src/$project_dir"
             ;;
         "status")
-
+            git status
+            ;;
+        "branch")
+            git branch
+            ;;
+        "checkout")
+            git checkout $*
             ;;
         esac
         echo ''
