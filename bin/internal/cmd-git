@@ -49,8 +49,19 @@ exec_command() {
                 shift
                 git commit -m "$branch: $*"
             else
-                echo "$branch: " | vipe | git commit -F -
+                status=$(git status | sed -e 's/^/##  /')
+                message=$(printf "$branch: \n\n####################################################\n$status" | vipe | sed '/^#/ d')
+                message_test=$(echo "$message" | tr -d '\\n')
+                if [[ "$message_test" == "$branch: " ]]; then
+                    echo '<commit canceled>'
+                else
+                    printf "$message" | git commit -F -
+                fi
             fi
+            ;;
+        "add")
+            git add $*
+            ;;
         esac
         echo ''
     done
