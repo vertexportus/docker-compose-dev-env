@@ -17,7 +17,8 @@ exec_command() {
         local upper_project_name=$(echo "$project_name" | sed -e 's/\(.*\)/\U\1/')
         projects_vars=($(printenv | egrep -o "PROJECT_${upper_project_name}"))
     fi
-    if [[ "${#projects_vars[@]}" -eq 0 ]]; then
+    project_count="${#projects_vars[@]}"
+    if [[ $project_count -eq 0 ]]; then
         echo 'error'
         exit 1
     fi
@@ -25,6 +26,7 @@ exec_command() {
     # apply command to each project
     for p in "${projects_vars[@]}"; do
         local project_dir=$(echo $p | sed "s/PROJECT_//" | sed "s/_/-/g" | sed -e 's/\(.*\)/\L\1/')
+        if [[ $project_count -gt 1 ]]; then printf " -- project: $project_dir\n\n"; fi
         if [[ "$cmd" != "clone" ]]; then
             cd "$ENV_PATH/src/$project_dir"
         fi
@@ -32,8 +34,11 @@ exec_command() {
         "clone")
             git clone "${!p}" "$ENV_PATH/src/$project_dir"
             ;;
+        "status")
+
+            ;;
         esac
-        # echo $i $folder "${!i}"
+        echo ''
     done
 
     # if [[ -n "$cmd" ]]; then
