@@ -49,7 +49,7 @@ exec_command() {
                 local branch=$(git branch | grep \* | cut -d ' ' -f2 | tr -d '\n')
                 echo "git commit -m \"$branch: $*\""
             else
-                echo $*
+                echo "git commit -m \"$branch: \"" 
             fi
         esac
         echo ''
