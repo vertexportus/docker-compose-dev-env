@@ -43,35 +43,17 @@ exec_command() {
         "checkout")
             git checkout $*
             ;;
+        "commit")
+            if [[ "$1" == "-m" ]]; then
+                shift
+                local branch=$(git branch | grep \* | cut -d ' ' -f2 | tr -d '\n')
+                echo "git commit -m \"$branch: $*\""
+            else
+                echo $*
+            fi
         esac
         echo ''
     done
-
-    # if [[ -n "$cmd" ]]; then
-    #     cd $ENV_PATH
-    #     case "$cmd" in
-    #     "up")
-    #         docker-compose up -d $*
-    #         ;;
-    #     "down")
-    #         docker-compose down $*
-    #         ;;
-    #     "destroy")
-    #         docker-compose down --rmi all --remove-orphans
-    #         ;;
-    #     "ps")
-    #         docker-compose ps
-    #         ;;
-    #     "exec")
-    #         docker-compose exec $*
-    #         ;;
-    #     *)
-    #         printf "\e[31minvalid command \e[36;1m$1\e[0m\n"
-    #         ;;
-    #     esac
-    # else
-    #     printf "\e[31mmissing command (up | down | destroy | exec)\e[0m\n"
-    # fi
 }
 
 if [[ -n $ENV_HELP ]]; then
