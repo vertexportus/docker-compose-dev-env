@@ -10,7 +10,7 @@ exec_command() {
 }
 
 if [[ -n $ENV_HELP ]]; then
-    printf "\e[36mruns 'ng' inside the the angular container: \e[36;1m$ENV_COMMAND angular <commands>\e[0m\n"
+    printf "\e[36mruns 'ng' inside the the angular container: \n  > \e[36;1m$ENV_COMMAND angular <commands>\e[0m\n"
 else
     exec_command $*
     printf "\n"

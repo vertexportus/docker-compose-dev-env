@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+exec_command() {
+    # get git command
+    local cmd=$1
+    shift
+    if [[ -z "$cmd" ]]; then
+        echo 'error'
+        exit 1
+    fi
+    # get projects
+    local project_name=$1
+    shift
+    if [[ $project_name == "all" ]]; then
+        projects_vars=($(printenv | egrep -o "PROJECT_\w+"))
+    else
+        local upper_project_name=$(echo "$project_name" | sed -e 's/\(.*\)/\U\1/')
+        projects_vars=($(printenv | egrep -o "PROJECT_${upper_project_name}"))
+    fi
+    if [[ "${#projects_vars[@]}" -eq 0 ]]; then
+        echo 'error'
+        exit 1
+    fi
+
+    # apply command to each project
+    for p in "${projects_vars[@]}"; do
+        local project_dir=$(echo $p | sed "s/PROJECT_//" | sed "s/_/-/g" | sed -e 's/\(.*\)/\L\1/')
+        if [[ "$cmd" != "clone" ]]; then
+            cd "$ENV_PATH/src/$project_dir"
+        fi
+        case "$cmd" in
+        "clone")
+            git clone "${!p}" "$ENV_PATH/src/$project_dir"
+            ;;
+        esac
+        # echo $i $folder "${!i}"
+    done
+
+    # if [[ -n "$cmd" ]]; then
+    #     cd $ENV_PATH
+    #     case "$cmd" in
+    #     "up")
+    #         docker-compose up -d $*
+    #         ;;
+    #     "down")
+    #         docker-compose down $*
+    #         ;;
+    #     "destroy")
+    #         docker-compose down --rmi all --remove-orphans
+    #         ;;
+    #     "ps")
+    #         docker-compose ps
+    #         ;;
+    #     "exec")
+    #         docker-compose exec $*
+    #         ;;
+    #     *)
+    #         printf "\e[31minvalid command \e[36;1m$1\e[0m\n"
+    #         ;;
+    #     esac
+    # else
+    #     printf "\e[31mmissing command (up | down | destroy | exec)\e[0m\n"
+    # fi
+}
+
+if [[ -n $ENV_HELP ]]; then
+    printf "\e[36mruns git commands on specific or several projects: \n  >\e[36;1m $ENV_COMMAND git <...> [arguments]\e[0m\n"
+else
+    exec_command $*
+    printf "\n"
+fi

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ -n $ENV_HELP ]]; then
-    printf "\e[36mprints project's base path : \e[36;1m$ENV_COMMAND path\e[0m\n"
+    printf "\e[36mprints project's base path: \n  > \e[36;1m$ENV_COMMAND path\e[0m\n"
 else
     echo $ENV_PATH
 fi
