@@ -33,6 +33,13 @@ exec_command() {
         case "$cmd" in
         "clone")
             git clone "${!p}" "$ENV_PATH/src/$project_dir"
+            gitignore="$ENV_PATH/src/.gitignore"
+            if [[ -f "$gitignore" ]]; then
+                gitignore_test=$(cat "$gitignore" | grep "$project_dir")
+                if [[ -z "$gitignore_test" ]]; then printf "$project_dir/\n" >> "$gitignore"; fi
+            else
+                printf "$project_dir/\n" >> "$gitignore"
+            fi
             ;;
         "status")
             git status
