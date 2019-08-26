@@ -4,6 +4,7 @@ exec_command() {
     if [[ "$1" == "new" ]]; then
         if [[ -z "$2" ]]; then exit 1; fi
         docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src:/app composer /bin/bash -c "composer global require laravel/installer && composer create-project --prefer-dist laravel/laravel $2"
+        printf "$2/\n" >> "$ENV_PATH/src/.gitignore"
     else
         docker-compose exec --user=$UID php php artisan $*
     fi
