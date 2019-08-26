@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 
+exec_command() {
+    if [[ "$1" == "new" ]]; then
+        if [[ -z "$2" ]]; then exit 1; fi
+        docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src:/app composer /bin/bash -c "composer global require laravel/installer && composer create-project --prefer-dist laravel/laravel $2"
+    else
+        docker-compose exec --user=$UID php php artisan $*
+    fi
+}
+
 if [[ -n $ENV_HELP ]]; then
     printf "\e[36mruns 'php artisan' inside the 'php' container: \n  > \e[36;1m$ENV_COMMAND laravel <commands>\e[0m\n"
+    printf "\e[36m        - creates new laravel project: \n  > \e[36;1m$ENV_COMMAND laravel new <project>\e[0m\n"
 else
     cd $ENV_PATH
-    docker-compose exec --user=$UID php php artisan $*
+    exec_command $*
     printf "\n"
 fi
 
