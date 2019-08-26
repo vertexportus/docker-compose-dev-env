@@ -12,7 +12,7 @@ exec_command() {
 
 if [[ -n $ENV_HELP ]]; then
     printf "\e[36mruns 'php artisan' inside the 'php' container: \n  > \e[36;1m$ENV_COMMAND laravel <commands>\e[0m\n"
-    printf "\e[36m        - creates new laravel project: \n  > \e[36;1m$ENV_COMMAND laravel new <project>\e[0m\n"
+    printf "        -\e[36m creates new laravel project: \n  > \e[36;1m$ENV_COMMAND laravel new <project>\e[0m\n"
 else
     cd $ENV_PATH
     exec_command $*

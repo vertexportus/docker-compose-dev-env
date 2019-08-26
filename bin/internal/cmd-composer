@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
+exec_command() {
+    if [[ "$1" == "link" ]]; then
+        if [[ -z "$2" ]]; then exit 1; fi
+        composer config repositories.local '{"type": "path", "url": "'$1'"}' --file composer.json
+    else
+        docker-compose exec --user=$UID php composer $*
+    fi
+}
+
 if [[ -n $ENV_HELP ]]; then
     printf "\e[36mruns 'composer' inside the 'php' container: \n  > \e[36;1m$ENV_COMMAND composer <commands>\e[0m\n"
+    printf "         -\e[36m creates a composer local link for package development: \n  > \e[36;1m$ENV_COMMAND composer link <path>\e[0m\n"
 else
     cd $ENV_PATH
-    docker-compose exec --user=$UID php composer $*
+    exec_command $*
     printf "\n"
 fi
