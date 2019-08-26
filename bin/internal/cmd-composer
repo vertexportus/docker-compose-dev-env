@@ -3,7 +3,7 @@
 exec_command() {
     if [[ "$1" == "link" ]]; then
         if [[ -z "$2" ]]; then exit 1; fi
-        composer config repositories.local '{"type": "path", "url": "'$1'"}' --file composer.json
+        composer config repositories.local '{"type": "path", "url": "'$2'"}' --file composer.json
     else
         docker-compose exec --user=$UID php composer $*
     fi
