@@ -5,7 +5,7 @@ exec_command() {
     local cmd=$1
     shift
     if [[ -z "$cmd" ]]; then
-        echo 'error'
+        printf "bad command\n\n"
         exit 1
     fi
     # get projects
@@ -14,12 +14,12 @@ exec_command() {
     if [[ $project_name == "all" ]]; then
         projects_vars=($(printenv | egrep -o "PROJECT_\w+"))
     else
-        local upper_project_name=$(echo "$project_name" | sed -e 's/\(.*\)/\U\1/')
+        local upper_project_name=$(echo "$project_name" | sed "s/-/_/g" | sed -e 's/\(.*\)/\U\1/')
         projects_vars=($(printenv | egrep -o "PROJECT_${upper_project_name}"))
     fi
     project_count="${#projects_vars[@]}"
     if [[ $project_count -eq 0 ]]; then
-        echo 'error'
+        printf "project not found\n\n"
         exit 1
     fi
 
@@ -68,6 +68,20 @@ exec_command() {
             ;;
         "add")
             git add $*
+            git status
+            ;;
+        "init")
+            git init
+            ;;
+        "remote")
+            if [[ "$1" == "add" && "$2" == "origin" ]]; then
+                git remote add origin "${!p}"
+            else
+                printf "command not accepted\n\n"
+            fi
+            ;;
+        "push")
+            git push $*
             ;;
         esac
         echo ''
