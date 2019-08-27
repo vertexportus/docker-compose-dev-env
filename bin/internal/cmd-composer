@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
 
 exec_command() {
-    if [[ "$1" == "link" ]]; then
-        if [[ -z "$2" ]]; then exit 1; fi
-        composer config repositories.local '{"type": "path", "url": "'$2'"}' --file composer.json
-    else
-        docker-compose exec --user=$UID php composer $*
-    fi
+    cmd=$1
+    case "$cmd" in
+        "link")
+            if [[ -z "$2" ]]; then exit 1; fi
+            composer config repositories.local '{"type": "path", "url": "'$2'"}' --file composer.json
+            ;;
+        "init")
+            if [[ -z "$2" ]]; then exit 1; fi
+            local folder=$2
+            cd $ENV_PATH/src
+            mkdir $folder
+            docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src/$folder:/app composer /bin/bash -c "composer init"
+            printf "$2/\n" >> "$ENV_PATH/src/.gitignore"
+            ;;
+        *)
+            docker-compose exec --user=$UID php composer $*
+            ;;
+    esac
 }
 
 if [[ -n $ENV_HELP ]]; then
