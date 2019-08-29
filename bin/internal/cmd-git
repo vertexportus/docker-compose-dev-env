@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+exec_command() {
+    # get git command
+    local cmd=$1
+    shift
+    if [[ -z "$cmd" ]]; then
+        printf "bad command\n\n"
+        exit 1
+    fi
+    # get projects
+    local project_name=$1
+    shift
+    if [[ $project_name == "all" ]]; then
+        projects_vars=($(printenv | egrep -o "PROJECT_\w+"))
+    else
+        local upper_project_name=$(echo "$project_name" | sed "s/-/_/g" | sed -e 's/\(.*\)/\U\1/')
+        projects_vars=($(printenv | egrep -o "PROJECT_${upper_project_name}"))
+    fi
+    project_count="${#projects_vars[@]}"
+    if [[ $project_count -eq 0 ]]; then
+        printf "project not found\n\n"
+        exit 1
+    fi
+
+    # apply command to each project
+    for p in "${projects_vars[@]}"; do
+        local project_dir=$(echo $p | sed "s/PROJECT_//" | sed "s/_/-/g" | sed -e 's/\(.*\)/\L\1/')
+        if [[ $project_count -gt 1 ]]; then printf "\e[1;33m -- project: $project_dir\e[0m \n\n"; fi
+        if [[ "$cmd" != "clone" ]]; then
+            cd "$ENV_PATH/src/$project_dir"
+        fi
+        case "$cmd" in
+        "clone")
+            git clone "${!p}" "$ENV_PATH/src/$project_dir"
+            gitignore="$ENV_PATH/src/.gitignore"
+            if [[ -f "$gitignore" ]]; then
+                gitignore_test=$(cat "$gitignore" | grep "$project_dir")
+                if [[ -z "$gitignore_test" ]]; then printf "$project_dir/\n" >> "$gitignore"; fi
+            else
+                printf "$project_dir/\n" >> "$gitignore"
+            fi
+            ;;
+        "status")
+            git status
+            ;;
+        "branch")
+            git branch
+            ;;
+        "checkout")
+            git checkout $*
+            ;;
+        "commit")
+            local branch=$(git branch | grep \* | cut -d ' ' -f2 | tr -d '\n')
+            if [[ "$1" == "-m" ]]; then
+                shift
+                git commit -m "$branch: $*"
+            else
+                status=$(git status | sed -e 's/^/##  /')
+                message=$(printf "$branch: \n\n####################################################\n$status" | vipe | sed '/^#/ d')
+                message_test=$(echo "$message" | tr -d '\\n')
+                if [[ "$message_test" == "$branch: " ]]; then
+                    echo '<commit canceled>'
+                else
+                    printf "$message" | git commit -F -
+                fi
+            fi
+            ;;
+        "add")
+            git add $*
+            git status
+            ;;
+        "init")
+            git init
+            ;;
+        "remote")
+            if [[ "$1" == "add" && "$2" == "origin" ]]; then
+                git remote add origin "${!p}"
+            else
+                printf "command not accepted\n\n"
+            fi
+            ;;
+        "push")
+            git push $*
+            ;;
+        esac
+        echo ''
+    done
+}
+
+if [[ -n $ENV_HELP ]]; then
+    printf "\e[36mruns git commands on specific or several projects: \n  >\e[36;1m $ENV_COMMAND git <...> [arguments]\e[0m\n"
+else
+    exec_command $*
+    printf "\n"
+fi

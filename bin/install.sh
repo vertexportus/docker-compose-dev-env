@@ -10,10 +10,11 @@ else # do install
     else
         bin_pwd=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
         printf "\e[33minstalling $1...\e[0m\n"
-        echo "PATH=\"$bin_pwd:\$PATH\" # $1 command registry" >> ~/.profile
+        # echo "PATH=\"$bin_pwd:\$PATH\" # $1 command registry" >> ~/.profile
         cp $bin_pwd/internal/.base $bin_pwd/$1
         chmod +x $bin_pwd/$1
-        printf "\e[32mInstalled. Remember to \e[44m\e[97msource ~/.profile\e[49m\e[32m or re-login your terminal. \e[1mHAVE FUN!!\e[0m\n"
+        printf "\e[32mInstalled. \e[1mHAVE FUN!!\e[0m\n"
+        # printf "\e[32mInstalled. Remember to \e[44m\e[97msource ~/.profile\e[49m\e[32m or re-login your terminal. \e[1mHAVE FUN!!\e[0m\n"
     fi
     # verify host
     verify_hosts=$(cat /etc/hosts | grep "$1 command registry")
