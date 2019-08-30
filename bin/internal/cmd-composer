@@ -4,11 +4,23 @@ exec_command() {
     cmd=$1
     case "$cmd" in
         "link")
-            if [[ -z "$2" ]]; then exit 1; fi
-            composer config repositories.local '{"type": "path", "url": "'$2'"}' --file composer.json
+            local library=$2
+            local target=$3
+            if [[ -z "$library" ]]; then echo '`link` command requires the name of the library to link'; exit 1; fi
+            if [[ -z "$target" ]]; then echo '`link` command requires the name of the target project'; exit 1; fi
+            local lib_path=$ENV_PATH/src/$library
+            local target_path=$ENV_PATH/src/$target
+            if [[ ! -d "$lib_path" ]]; then echo "library '$library' does not exist"; exit 1; fi
+            if [[ ! -d "$target_path" ]]; then echo "project '$target' does not exist"; exit 1; fi
+            local result=$(docker-compose exec web sh -c "[ -d /var/src/$library ] && echo Yes || echo No" | sed -e 's/\r//g')
+            if [[ "$result" == "Yes" ]]; then
+                docker run --rm --user $UID:$UID --interactive --tty --volume $target_path:/app composer config repositories.local '{"type": "path", "url": "/var/src/'$2'"}' --file composer.json
+            else
+                echo "No access to $library folder from web container, please add './src' as a volume map to '/var/src'"
+            fi
             ;;
         "init")
-            if [[ -z "$1" ]]; then exit 1; fi
+            if [[ -z "$1" ]]; then echo "`init` command needs a project defined"; exit 1; fi
             local folder=$1
             cd $ENV_PATH/src
             mkdir $folder
@@ -16,10 +28,10 @@ exec_command() {
             printf "$2/\n" >> "$ENV_PATH/src/.gitignore"
             ;;
         *)
-            if [[ -z "$1" ]]; then exit 1; fi
+            if [[ -z "$1" ]]; then echo "`$cmd` command needs a project defined"; exit 1; fi
             local folder=$1
             shift
-            docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src/$folder:/app composer /bin/bash -c "composer $*"
+            docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src/$folder:/app --volume $ENV_PATH/src:/var/src composer /bin/bash -c "composer $*"
             ;;
     esac
 }
