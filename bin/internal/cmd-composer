@@ -30,6 +30,7 @@ exec_command() {
         *)
             if [[ -z "$1" ]]; then echo "`$cmd` command needs a project defined"; exit 1; fi
             local folder=$1
+            if [[ ! -d "$ENV_PATH/src/$folder" ]]; then echo "project '$folder' does not exist"; exit 1; fi
             shift
             docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src/$folder:/app --volume $ENV_PATH/src:/var/src composer /bin/bash -c "composer $*"
             ;;
