@@ -17,7 +17,7 @@ exec_command() {
         echo $key
         sed -i "s%APP_KEY=.*%APP_KEY="$key"%g" "$ENV_PATH/$PHP_DOTENV"
         ;;
-    "*")
+    *)
         docker-compose exec --user=$UID php php artisan $*
         ;;
     esac
