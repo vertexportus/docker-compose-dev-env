@@ -7,7 +7,14 @@ exec_command() {
         cd $ENV_PATH
         case "$cmd" in
         "up")
-            docker-compose up -d $*
+            for param in "$@"; do
+                if [[ $param == --attach ]]; then local attach=Yes; fi
+            done
+            if [ -z $attach ]; then
+                docker-compose up -d $*
+            else
+                docker-compose up $(echo "$*" | sed "s/--attach//g")
+            fi
             ;;
         "down")
             docker-compose down $*
