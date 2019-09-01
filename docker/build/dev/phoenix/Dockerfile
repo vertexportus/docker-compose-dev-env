@@ -1,8 +1,8 @@
-from elixir:1.9-alpine
+FROM elixir:1.9-alpine
 
 # packages
 RUN apk update \
-    && apk add --no-cache postgresql-client \
+    && apk add --no-cache postgresql-client inotify-tools \
     && rm -rf /var/cache/apk/*
 
 # env
