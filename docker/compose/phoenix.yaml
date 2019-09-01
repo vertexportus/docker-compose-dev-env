@@ -7,5 +7,6 @@ services:
       context: ../../docker/build/${ENV:-dev}/phoenix
     volumes:
       - ../../${PHOENIX_APP_PATH:-src/phoenix/}:/app
+      - ../../docker/build/${ENV:-dev}/phoenix/entrypoint.sh:/docker-entrypoint.sh
     ports:
       - ${PHOENIX_APP_PORT:-4000}:4000
