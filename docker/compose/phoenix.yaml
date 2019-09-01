@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  phoenix:
+    build:
+      context: ../../docker/build/${ENV:-dev}/phoenix
+    volumes:
+      - ../../${PHOENIX_APP_PATH:-src/phoenix/}:/app
+    ports:
+      - ${PHOENIX_APP_PORT:-4000}:4000

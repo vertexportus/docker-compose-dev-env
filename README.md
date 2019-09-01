@@ -40,12 +40,19 @@ DOCKER_TLS_VERIFY
 ### PHP-FPM
 
 ```
-PHP_APP_PATH
+PHP_APP_PATH=src/laravel-app
 PHP_DOTENV=.laravel.env
 PHP_IDE_DEBUG_SERVERNAME=Docker
 PHP_XDEBUG_REMOTE_HOST=$(ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')
 PHP_XDEBUG_REMOTE_PORT=9000
 PHP_XDEBUG_IDEKEY=PHPSTORM
+```
+
+### Elixir Phoenix Framework
+
+```
+PHOENIX_APP_PATH=src/phoenix
+PHOENIX_APP_PORT=4000
 ```
 
 ### Web
