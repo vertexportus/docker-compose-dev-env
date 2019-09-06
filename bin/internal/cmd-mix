@@ -13,7 +13,8 @@ exec_command() {
         sudo chown -R $USER:$USER src/$project/
         ;;
     *)
-        if [ -z $2 ]; then local container=$2; else local container=phoenix; fi
+        local container=$1
+        shift
         docker-compose exec --user=$UID $container mix $*
         ;;
     esac
