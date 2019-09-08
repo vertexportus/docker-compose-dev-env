@@ -11,9 +11,9 @@ exec_command() {
                 if [[ $param == --attach ]]; then local attach=Yes; fi
             done
             if [ -z $attach ]; then
-                docker-compose up -d $*
+                docker-compose up -d $* --remove-orphans
             else
-                docker-compose up $(echo "$*" | sed "s/--attach//g")
+                docker-compose up $(echo "$*" | sed "s/--attach//g") --remove-orphans
             fi
             ;;
         "down")
@@ -21,6 +21,9 @@ exec_command() {
             ;;
         "destroy")
             docker-compose down --rmi all --remove-orphans
+            ;;
+        "rm")
+            docker-compose rm
             ;;
         "ps")
             docker-compose ps
@@ -38,7 +41,7 @@ exec_command() {
 }
 
 if [[ -n $ENV_HELP ]]; then
-    printf "\e[36mruns pre-defined docker or docker-compose commands: \n  > \e[36;1m$ENV_COMMAND docker <up | down | destroy | exec> [arguments]\e[0m\n"
+    printf "\e[36mruns pre-defined docker or docker-compose commands: \n  > \e[36;1m$ENV_COMMAND docker <up | down | rm | destroy | exec> [arguments]\e[0m\n"
 else
     exec_command $*
     printf "\n"
