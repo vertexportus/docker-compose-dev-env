@@ -12,7 +12,7 @@ exec_command() {
     local project_name=$1
     shift
     if [[ $project_name == "all" ]]; then
-        projects_vars=($(printenv | egrep -o "PROJECT_\w+"))
+        projects_vars=($(printenv | grep -v "COMPOSE_" | egrep -o "PROJECT_\w+"))
     else
         local upper_project_name=$(echo "$project_name" | sed "s/-/_/g" | sed -e 's/\(.*\)/\U\1/')
         projects_vars=($(printenv | egrep -o "PROJECT_${upper_project_name}"))
@@ -22,6 +22,7 @@ exec_command() {
         printf "project not found\n\n"
         exit 1
     fi
+    exit
 
     # apply command to each project
     for p in "${projects_vars[@]}"; do
