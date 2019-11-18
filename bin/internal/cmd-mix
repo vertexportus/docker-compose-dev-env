@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+exec_command() {
+    cmd=$1
+    case "$cmd" in
+    "phx.new")
+        shift
+        for param in "$@"; do
+            if [[ $param != --* ]]; then local project=$param; fi
+        done
+        if [[ -z "$project" ]]; then echo '`phx.new` command requires a project name'; exit 1; fi
+        docker run --rm --interactive --tty --volume $ENV_PATH/src:/app elixir:1.9-alpine /bin/sh -c "cd /app; mix local.hex --force; mix archive.install hex phx_new --force; yes | mix phx.new $*"
+        sudo chown -R $USER:$USER src/$project/
+        ;;
+    *)
+        local container=$1
+        shift
+        docker-compose exec --user=$UID $container mix $*
+        ;;
+    esac
+}
+
+if [[ -n $ENV_HELP ]]; then
+    printf "\e[36mruns elixir 'mix' inside an elixir container : \n  > \e[36;1m$ENV_COMMAND mix <commands>\e[0m\n"
+else
+    cd $ENV_PATH
+    exec_command $*
+    printf "\n"
+fi

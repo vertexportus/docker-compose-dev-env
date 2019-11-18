@@ -1,13 +1,26 @@
 #!/usr/bin/env bash
 
 exec_command() {
-    if [[ "$1" == "new" ]]; then
-        if [[ -z "$2" ]]; then exit 1; fi
+    cmd=$1
+    case "$cmd" in
+    "new")
+        if [[ -z "$2" ]]; then echo '`new` command requires a project name'; exit 1; fi
         docker run --rm --user $UID:$UID --interactive --tty --volume $ENV_PATH/src:/app composer /bin/bash -c "composer global require laravel/installer && composer create-project --prefer-dist laravel/laravel $2"
         printf "$2/\n" >> "$ENV_PATH/src/.gitignore"
-    else
+        ;;
+    "key:generate")
+        local path="$ENV_PATH/$PHP_APP_PATH"
+        echo 'APP_KEY=' > "$path/.env"
+        docker-compose exec --user=$UID php php artisan key:generate
+        local key=$(cat "$path/.env" | sed 's/APP_KEY=//g')
+        rm "$path/.env"
+        echo $key
+        sed -i "s%APP_KEY=.*%APP_KEY="$key"%g" "$ENV_PATH/$PHP_DOTENV"
+        ;;
+    *)
         docker-compose exec --user=$UID php php artisan $*
-    fi
+        ;;
+    esac
 }
 
 if [[ -n $ENV_HELP ]]; then
