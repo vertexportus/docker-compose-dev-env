@@ -22,7 +22,6 @@ exec_command() {
         printf "project not found\n\n"
         exit 1
     fi
-    exit
 
     # apply command to each project
     for p in "${projects_vars[@]}"; do
@@ -83,6 +82,9 @@ exec_command() {
             ;;
         "push")
             git push $*
+            ;;
+        "pull")
+            git pull $*
             ;;
         esac
         echo ''
