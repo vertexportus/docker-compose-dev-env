@@ -55,6 +55,9 @@ exec_command() {
             if [[ "$1" == "-m" ]]; then
                 shift
                 git commit -m "$branch: $*"
+            elif [[ "$1" == "-am" ]]; then
+                shift
+                git commit -am "$branch: $*"
             else
                 status=$(git status | sed -e 's/^/##  /')
                 message=$(printf "$branch: \n\n####################################################\n$status" | vipe | sed '/^#/ d')
