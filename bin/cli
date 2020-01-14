@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+##VERSION:x
+
+# tools paths
+script_full_path=$(dirname "$0")
+tools_full_path=$(realpath $script_full_path/internal)
+export CLI_COMMAND=$(basename "$0")
+# run command
+$tools_full_path/cli.py $*
