@@ -3,17 +3,20 @@
 import sys
 import inspect
 import importlib
-from utils import colorargparse, env
+import traceback
+from utils import env, ColoredArgumentParser
 from utils.colors import red
 
 command_modules = {
     "docker",
     "shell",
+    "git",
 }
 
 def cli():
     # parse top level commands
-    parser = colorargparse.ColoredArgumentParser(prog=env.cli_command(), description='project dev utilities')
+    parser = ColoredArgumentParser(prog=env.cli_command(), description='project dev utilities')
+    parser.add_argument('-v', '--verbose', action="store_true", help="verbose output")
     subparsers = parser.add_subparsers(required=True, dest="command", help=f"{env.cli_command()} command", title="commands")
 
     # parse additional modules
@@ -39,9 +42,12 @@ def cli():
         
     # parse args and exec appropriate command
     args = parser.parse_args()
+    global verbose
+    verbose = args.verbose
     command = parser_classes[args.command](args)
     command.process_command()
 
+verbose = True
 if __name__ == '__main__':
     try:
         cli()
@@ -49,5 +55,8 @@ if __name__ == '__main__':
         print(red("Interrupted"))
         sys.exit(0)
     except Exception as ex:
-        print(red(ex))
+        if verbose:
+            traceback.print_exc()
+        else:
+            print(red(ex))
         exit(1)

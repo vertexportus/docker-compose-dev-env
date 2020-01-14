@@ -1,5 +1,4 @@
 from . import base_command
-from utils import colorargparse
 
 class Shell(base_command.BaseCommand):
     @staticmethod

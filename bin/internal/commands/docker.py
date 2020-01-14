@@ -31,29 +31,29 @@ class Docker(base_command.BaseCommand):
         parser_logs.add_argument('-f', '--follow', action="store_true", help="follow log output")
 
     def process_command(self):
-        getattr(self, f"_{self._args.subcommand}")()
+        getattr(self, f"_{self._args.subcommand}_handler")()
 
-    def _up(self):
+    def _up_handler(self):
         self.run_shell("docker-compose down")
         if (self._args.rebuild):
             self.run_shell("docker-compose build --no-cache")
         up_args = f"--remove-orphans {'' if self._args.attach else '-d'} {'--build' if self._args.build else ''}"
         self.run_shell(f"docker-compose up {up_args}")
 
-    def _down(self):
+    def _down_handler(self):
         down_args = ' '.join(self._args.params) if len(self._args.params) > 0 else '--remove-orphans'
         self.run_shell(f"docker-compose down {down_args}")
 
-    def _destroy(self):
+    def _destroy_handler(self):
         self.run_shell("docker-compose down --rmi all --remove-orphans")
 
-    def _ps(self):
+    def _ps_handler(self):
         self.run_shell('docker-compose ps')
 
-    def _exec(self):
+    def _exec_handler(self):
         exec_args = f"{self._args.exec_command} {' '.join(self._args.params) if len(self._args.params) else ''}"
         self.run_shell(f"docker-compose exec {self._args.container} {exec_args}")
     
-    def _logs(self):
+    def _logs_handler(self):
         logs_args = f"{self._args.container if self._args.container != 'all' else ''} {'-f' if self._args.follow else ''}"
         self.run_shell(f"docker-compose logs {logs_args}")
