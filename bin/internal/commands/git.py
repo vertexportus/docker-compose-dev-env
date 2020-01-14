@@ -32,10 +32,8 @@ class Git(base_command.BaseCommand):
                 self.__git_clone(project, projects[project])
             else:
                 raise Exception(f"no configuration set for project '{self._args.project}'")
-    def _commit_handler(self):
-        pass
     def _default_handler(self):
-        pass
+        raise Exception(f"command '{self._args.git_command}' not supported")
 
     def __git_clone(self, project, repo_url):
         print(blue(f"cloning repository for {project}"))

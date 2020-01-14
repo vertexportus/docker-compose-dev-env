@@ -3,6 +3,7 @@ version: '3'
 services:
 
   phoenix:
+    container_name: ${COMPOSE_PROJECT_NAME}_${PHOENIX_CONTAINER_NAME:-phoenix}
     build:
       context: ../../docker/build/${ENV:-dev}/phoenix
     volumes:

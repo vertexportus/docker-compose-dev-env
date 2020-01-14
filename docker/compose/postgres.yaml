@@ -3,6 +3,7 @@ version: '3'
 services:
 
   postgres:
+    container_name: ${COMPOSE_PROJECT_NAME}_${POSTGRES_CONTAINER_NAME:-postgres}
     build:
       context: ../../docker/build/${ENV:-dev}/postgres
     volumes:
